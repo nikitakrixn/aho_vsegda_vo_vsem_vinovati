@@ -1,6 +1,7 @@
 # Rust
 target
 Cargo.lock
+diesel.toml
 
 # Nuxt dev/build outputs
 .output
