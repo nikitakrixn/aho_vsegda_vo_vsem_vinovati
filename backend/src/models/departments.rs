@@ -1,14 +1,15 @@
 use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Selectable)]
-#[diesel(table_name = crate::schema::departments::table)]
+#[derive(Queryable, Selectable, Identifiable, Serialize, Deserialize, Debug, Clone)]
+#[diesel(table_name = crate::schema::departments)]
 pub struct Department {
     pub id: i32,
     pub name: String,
 }
 
-#[derive(Insertable)]
-#[table_name = "departments"]
+#[derive(Insertable, Deserialize, AsChangeset)]
+#[diesel(table_name = crate::schema::departments)]
 pub struct NewDepartment {
     pub name: String,
 }

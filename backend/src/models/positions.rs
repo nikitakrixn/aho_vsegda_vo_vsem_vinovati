@@ -1,14 +1,15 @@
 use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Selectable)]
-#[diesel(table_name = )]
+#[derive(Queryable, Selectable, Identifiable, Serialize, Deserialize, Debug, Clone)]
+#[diesel(table_name = crate::schema::positions)]
 pub struct Position {
     pub id: i32,
     pub name: String,
 }
 
-#[derive(Insertable)]
-#[diesel(table_name = "positions")]
-pub struct NewPosition<'a> {
-    pub name: &'a str,
+#[derive(Insertable, Deserialize, AsChangeset)]
+#[diesel(table_name = crate::schema::positions)]
+pub struct NewPosition {
+    pub name: String,
 }

@@ -1,4 +1,3 @@
-mod departments;
-mod positions;
-mod employees;
-mod schema;
+pub mod employees;
+pub mod departments;
+pub mod positions;
