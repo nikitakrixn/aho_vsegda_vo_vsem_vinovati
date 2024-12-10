@@ -1,10 +1,12 @@
 mod conifg;
+mod logging;
 
 use std::net::SocketAddr;
 
 use axum::Router;
 use axum::routing::get;
 use diesel::{r2d2::{self, ConnectionManager}, PgConnection};
+use tower_http::cors::{AllowOrigin, CorsLayer};
 
 pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -20,7 +22,9 @@ async fn create_db_pool() -> DbPool {
 
 #[tokio::main]
 async fn main() {
-    let config = conifg::Config::load().unwrap();
+    logging::init_logging();
+
+    let config = conifg::Config::load().expect("Failed to load configuration");
 
     let db_pool = create_db_pool().await;
 
@@ -29,7 +33,7 @@ async fn main() {
     let addr_string = format!("{}:{}", config.app_host, config.app_port);
     let addr = addr_string.parse::<SocketAddr>().expect(&format!("Can't parse {}", addr_string));
 
-    let app = Router::new().route("/", get(|| async { "Hello, world!" }));
+    let app = Router::new().route("/", get(|| async { "Hello, world!" }).layer(CorsLayer::new().allow_origin(AllowOrigin::mirror_request())));
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
 
