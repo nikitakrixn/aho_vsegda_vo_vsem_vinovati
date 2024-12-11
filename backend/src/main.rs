@@ -5,9 +5,10 @@ mod handlers;
 mod models;
 mod schema;
 
-use std::net::SocketAddr;
-use axum::{routing::{delete, get, post, put}, Router};
-use tower_http::cors::{AllowOrigin, CorsLayer};
+use std::{net::SocketAddr, time::Duration};
+use axum::{http::{Request, Response}, routing::{delete, get, post, put}, Router};
+use tower_http::{cors::{AllowOrigin, CorsLayer}, trace::TraceLayer};
+use tracing::Span;
 
 #[tokio::main]
 async fn main() {
@@ -30,6 +31,27 @@ async fn main() {
         .route("/departments", get(handlers::departments::list_departments))
         .route("/positions", get(handlers::positions::list_positions))
         .layer(CorsLayer::new().allow_origin(AllowOrigin::mirror_request()))
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(|request: &Request<_>| {
+                    tracing::info_span!(
+                        "http_request",
+                        method = %request.method(),
+                        uri = %request.uri(),
+                        version = ?request.version(),
+                    )
+                })
+                .on_request(|request: &Request<_>, _span: &Span| {
+                    tracing::info!("started {} {}", request.method(), request.uri());
+                })
+                .on_response(|response: &Response<_>, latency: Duration, _span: &Span| {
+                    tracing::info!(
+                        status = response.status().as_u16(),
+                        latency = ?latency,
+                        "finished"
+                    );
+                })
+        )
         .with_state(db_pool);
 
     tracing::info!("Listening on {}", addr);

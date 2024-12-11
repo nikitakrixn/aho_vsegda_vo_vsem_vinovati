@@ -12,7 +12,7 @@ pub fn init_logging(app_name: &str) {
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
 
     tracing_subscriber::registry()
-        .with(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
+        .with(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info,backend=debug,tower_http=debug,axum::rejection=trace".into()))
         .with(fmt::layer().with_writer(stdout.and(non_blocking)))
         .init();
 
