@@ -1,36 +1,38 @@
 mod config;
+mod db;
 mod logging;
+mod handlers;
+mod models;
+mod schema;
 
 use std::net::SocketAddr;
-
-use axum::Router;
-use axum::routing::get;
-use diesel::{r2d2::{self, ConnectionManager}, PgConnection};
+use axum::{routing::{delete, get, post, put}, Router};
 use tower_http::cors::{AllowOrigin, CorsLayer};
-
-pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
-
-async fn create_db_pool(config: &config::Config) -> DbPool {
-    let manager = ConnectionManager::<PgConnection>::new(&config.database_url);
-    r2d2::Pool::builder()
-        .build(manager)
-        .expect("Failed to create pool.")
-}
 
 #[tokio::main]
 async fn main() {
-    logging::init_logging();
-
     let config = config::Config::load().expect("Failed to load configuration");
-    tracing::info!("Loaded configuration: {:?}", config);
 
-    let db_pool = create_db_pool(&config).await;
+    logging::init_logging(&config.app_name);
+
+    let db_pool = db::create_pool(&config.database_url);
 
     let addr_string = format!("{}:{}", config.app_host, config.app_port);
     let addr = addr_string.parse::<SocketAddr>().expect(&format!("Can't parse {}", addr_string));
 
-    let app = Router::new().route("/", get(|| async { "Hello, world!" }).layer(CorsLayer::new().allow_origin(AllowOrigin::mirror_request())));
+    let app = Router::new()
+        .route("/employees", post(handlers::employees::create_employee))
+        .route("/employees", get(handlers::employees::list_employees))
+        .route("/employees/:id", get(handlers::employees::get_employee))
+        .route("/employees/:id", put(handlers::employees::update_employee))
+        .route("/employees/:id", delete(handlers::employees::delete_employee))
+        .route("/employees/:id/hard", delete(handlers::employees::hard_delete_employee))
+        .route("/departments", get(handlers::departments::list_departments))
+        .route("/positions", get(handlers::positions::list_positions))
+        .layer(CorsLayer::new().allow_origin(AllowOrigin::mirror_request()))
+        .with_state(db_pool);
 
+    tracing::info!("Listening on {}", addr);
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
 
     axum::serve(listener, app)
