@@ -4,9 +4,10 @@ mod logging;
 mod handlers;
 mod models;
 mod schema;
+mod services;
 
 use std::{net::SocketAddr, time::Duration};
-use axum::{http::{Request, Response}, routing::{delete, get, post, put}, Router};
+use axum::{http::{Request, Response}, routing::{delete, get, post}, Router};
 use tower_http::{cors::{AllowOrigin, CorsLayer}, trace::TraceLayer};
 use tracing::Span;
 
@@ -24,10 +25,12 @@ async fn main() {
     let app = Router::new()
         .route("/employees", post(handlers::employees::create_employee))
         .route("/employees", get(handlers::employees::list_employees))
-        .route("/employees/:id", get(handlers::employees::get_employee))
-        .route("/employees/:id", put(handlers::employees::update_employee))
-        .route("/employees/:id", delete(handlers::employees::delete_employee))
+        .route("/employees/:id", 
+                get(handlers::employees::get_employee)
+                .put(handlers::employees::update_employee)
+                .delete(handlers::employees::delete_employee))
         .route("/employees/:id/hard", delete(handlers::employees::hard_delete_employee))
+        .route("/employees/:id/create_accounts", post(handlers::employees::trigger_account_creation))
         .route("/departments", get(handlers::departments::list_departments))
         .route("/positions", get(handlers::positions::list_positions))
         .layer(CorsLayer::new().allow_origin(AllowOrigin::mirror_request()))

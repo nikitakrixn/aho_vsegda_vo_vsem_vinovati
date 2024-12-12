@@ -1,3 +1,4 @@
+use chrono::Local;
 use diesel_async::RunQueryDsl;
 use backend::{
     db,
@@ -60,6 +61,32 @@ async fn main() {
             .execute(&mut conn)
             .await
             .expect("Error seeding position");
+    }
+
+    let employees_data = vec![
+        ("Валерий", "Зубарев", Some("Александрович"), 5, "zubarevva@oosz.ru"),
+        ("Никита", "Найдёнов", Some("Андреевич"), 9, "naydenovna@oosz.ru"),
+    ];
+
+    for (first_name, last_name, middle_name, position_id, email) in employees_data {
+        let employee = backend::models::employees::NewEmployee {
+            first_name: first_name.into(),
+            last_name: last_name.into(),
+            middle_name: middle_name.map(|s| s.into()),
+            department_id: Some(8),
+            position_id: Some(position_id),
+            hire_date: Local::now().naive_local().date(),
+            ad_login: None,
+            email: Some(email.into()),
+            status: "работает".into(),
+            phone: None,
+        };
+
+        diesel::insert_into(backend::schema::employees::table)
+            .values(&employee)
+            .execute(&mut conn)
+            .await
+            .expect("Error seeding employee");
     }
 
     println!("Seeding completed successfully!");
