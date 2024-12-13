@@ -1,5 +1,12 @@
+<script setup lang="ts">
+useSeoMeta({
+  title: 'БУОО "Омскоблстройзаказчик"',
+  ogtitle: 'БУОО "Омскоблстройзаказчик"',
+})
+</script>
+
 <template>
-  <h1 class="text-3xl font-bold underline">
-    Hello BONDITS!
-  </h1>
+  <NuxtLayout>   
+    <NuxtPage />
+  </NuxtLayout> 
 </template>

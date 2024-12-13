@@ -9,7 +9,19 @@ export default {
     "./error.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        onest: ['Onest', 'sans-serif'],
+      },
+      colors: {
+        primary: '#4a7dff',
+        success: '#51ce2c',
+        warning: '#ff8800',
+        error: '#f93939',
+        gray: '#656b7b',
+        light: '#f2f3f7',
+      },
+    },
   },
   plugins: [],
 }
