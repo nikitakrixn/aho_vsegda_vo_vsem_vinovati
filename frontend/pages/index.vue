@@ -4,7 +4,6 @@ const serverCount = ref(20);
 const recentEvents = ref([
   { id: 1, message: 'Пользователь JohnDoe вошел в систему.' },
   { id: 2, message: 'Сервер server1 перезагружен.' },
-  // Добавьте другие события
 ]);
 </script>
 
@@ -14,7 +13,6 @@ const recentEvents = ref([
     <div class="bg-white rounded-lg shadow p-6">
       <h2 class="text-xl font-semibold text-gray-700 mb-4">Системные ресурсы</h2>
       <div>
-        <!-- Пример: Использование прогресс-баров для отображения загрузки ресурсов -->
         <div class="mb-4">
           <label class="text-gray-600">CPU Usage</label>
           <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
@@ -39,14 +37,12 @@ const recentEvents = ref([
       </div>
     </div>
 
-    <!-- Карточка с последними событиями -->
     <div class="bg-white rounded-lg shadow p-6">
       <h2 class="text-xl font-semibold text-gray-700 mb-4">Последние события</h2>
       <ul class="text-gray-600">
         <li class="mb-2">[12:30] Backup completed successfully.</li>
         <li class="mb-2">[11:15] New user account created: johndoe.</li>
         <li class="mb-2">[10:05] Warning: High CPU usage detected.</li>
-        <!-- Добавьте больше событий -->
       </ul>
     </div>
 
@@ -66,7 +62,6 @@ const recentEvents = ref([
           <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
           Email Server: <span class="ml-auto text-red-500">Down</span>
         </li>
-        <!-- Добавьте больше сервисов -->
       </ul>
     </div>
   </section>
