@@ -1,36 +1,20 @@
 <template>
   <div class="flex h-screen font-onest">
-    <aside class="w-16">
+    <aside class="w-20">
       <div class="p-4">
-        <CommonApplicationLogo class="h-10 w-auto" />
+        <CommonApplicationLogo class="h-12 w-auto mx-auto" />
         <nav class="mt-6">
-          <ul class="space-y-2">
-            <li>
-              <router-link to="/" class="flex items-center py-2 px-4  bg-light hover:bg-gray-200 rounded-md">
-                <Icon name="uil:github" class="text-primary" />
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/employees" class="flex items-center py-2 px-4 text-gray-600 hover:bg-gray-200 rounded-md">
-                <Icon name="ph:users-light" class="text-primary" style="color: black;" />
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/departments" class="flex items-center py-2 px-4 text-gray-600 hover:bg-gray-200 rounded-md">
-                Отделы
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/equipment" class="flex items-center py-2 px-4 text-gray-600 hover:bg-gray-200 rounded-md">
-                Оборудование
-              </router-link>
-            </li>
+          <ul class="space-y-6">
+            <NavLink to="/" icon="ph:buildings-bold"/>
+            <NavLink to="/employees" icon="ph:users-bold" />
+            <NavLink to="/departments" icon="ph:folders-bold" />
+            <NavLink to="/equipment" icon="ph:cpu-bold" />
           </ul>
         </nav>
       </div>
     </aside>
     <div class="flex-1 p-8 bg-slate-100">
-      <header class="flex justify-between items-center mb-4">
+      <header class="flex justify-between items-center pb-4 border-b border-slate-300">
         <h1 class="text-2xl font-bold text-gray-800">{{ currentCategory }}</h1>
         <div class="flex space-x-4">
           <router-link
@@ -43,7 +27,7 @@
           </router-link>
         </div>
       </header>
-      <main class="p-4">
+      <main class="mt-6">
         <slot />
       </main>
     </div>
