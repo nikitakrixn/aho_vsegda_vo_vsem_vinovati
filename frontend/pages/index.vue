@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  title: 'Главная',
+  category: 'Главная',
+})
+
 const userCount = ref(100);
 const serverCount = ref(20);
 const recentEvents = ref([
